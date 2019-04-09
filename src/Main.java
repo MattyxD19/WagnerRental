@@ -165,7 +165,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         remainingGas = new TextField();
         remainingGas.setPromptText("Enter amount of gas");
         remainingGas.setLayoutX(50);
-        remainingGas.setLayoutY(25);
+        remainingGas.setLayoutY(50);
 
 
         root4.getChildren().addAll(remainingGas, endMilage);
@@ -196,6 +196,9 @@ public class Main extends Application implements EventHandler<ActionEvent> {
             int intZipcode = Integer.parseInt(strZipcode);
             int intDriver = Integer.parseInt(strDriver);
             int intExtraDriver = Integer.parseInt(strExtraDriver);
+
+            DB.insertSQL("INSERT INTO tblCustomer VALUES ('"+ strName +"','"+ strAddress +"' ,"+ intPhone +" \n" +
+                    "," + intZipcode + " ,"+ intDriver+" ,"+ intExtraDriver+")");
 
             System.out.println(strName);
             System.out.println(strAddress);
