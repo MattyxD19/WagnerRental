@@ -11,10 +11,14 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 
-public class Main extends Application {
 
-    Scene scene1, scene2, scene3, scene4, scene5;
+public class Main extends Application implements EventHandler<ActionEvent> {
+
+    Scene scene1, scene2, scene3, endOfReservation;
     Button search;
+    Button button2;
+    Button saveScene2;
+    Button endReservation;
     CheckBox insurance;
     TextField name;
     TextField address;
@@ -24,9 +28,13 @@ public class Main extends Application {
     TextField extraDriver;
     TextField startWeek;
     TextField endWeek;
+    TextField endMilage;
+    TextField remainingGas;
     ChoiceBox categorySelection;
     TableView availableCampers;
 
+    public String totalPrice;
+    public String strName, strAddress, strPhone, strZipcode, strDriver, strExtraDriver, strStartWeek, strEndWeek;
 
     //Button reservation;
     public Pane root2 = new Pane();
@@ -34,23 +42,25 @@ public class Main extends Application {
     public Pane root4 = new Pane();
 
 
+
     @Override
     public void start(Stage primaryStage) throws Exception {
-
-
-
 //Scene 1
-
-
         Label label1= new Label("Welcome to Autocamper Rental");
         Button button1= new Button("Start reservation");
+        endReservation = new Button("End your reservation");
+        endReservation.setOnAction(event -> primaryStage.setScene(endOfReservation));
         button1.setOnAction(e -> primaryStage.setScene(scene2));
         VBox layout1 = new VBox(20);
-        layout1.getChildren().addAll(label1, button1);
+        layout1.getChildren().addAll(label1, button1, endReservation);
         scene1= new Scene(layout1, 600, 600);
 
 //Scene 2
         Label label2= new Label("Step 1");
+        saveScene2 = new Button("Save information");
+        saveScene2.setLayoutX(50);
+        saveScene2.setLayoutY(350);
+        saveScene2.setOnAction(this);
 
         name = new TextField();
         name.setPromptText("Enter name");
@@ -83,11 +93,14 @@ public class Main extends Application {
         extraDriver.setLayoutY(300);
 
 
-        Button button2= new Button("Continue");
+        button2= new Button("Continue");
         button2.setLayoutX(400);
         button2.setLayoutY(500);
+
         button2.setOnAction(e -> primaryStage.setScene(scene3));
-        root2.getChildren().addAll(label2, button2, name, address, phone, zipCode, driverLicense, extraDriver);
+
+        root2.getChildren().addAll(label2, button2, name, address, phone, zipCode, driverLicense,
+                extraDriver, saveScene2);
         scene2= new Scene(root2,600,600);
 
         //Scene 3
@@ -96,8 +109,13 @@ public class Main extends Application {
         label4.setLayoutX(250);
         label4.setLayoutY(100);
 
-        Label label5= new Label("Step 2");
-        Label totalPrice= new Label("Step 2");
+        Label label5= new Label("Price so far:");
+        label5.setLayoutX(500);
+        label5.setLayoutY(20);
+
+        Label priceLabel= new Label(totalPrice);
+        priceLabel.setLayoutX(500);
+        priceLabel.setLayoutY(50);
 
         startWeek = new TextField();
         startWeek.setPromptText("Enter start week");
@@ -132,14 +150,26 @@ public class Main extends Application {
         insurance.setLayoutY(100);
 
         scene3 = new Scene(root3, 600, 600);
-        button3.setOnAction(e -> primaryStage.setScene(scene4));
+        search.setOnAction(this);
+        button3.setOnAction(e -> primaryStage.setScene(endOfReservation));
         root3.getChildren().addAll(startWeek, endWeek, categorySelection, availableCampers, search,
-                button3, insurance, label3, label4,);
-
-
+                button3, insurance, label3, label4, label5, priceLabel);
 
         //Scene 4
-        scene4 = new Scene(root4, 600, 600);
+
+        endMilage = new TextField();
+        endMilage.setPromptText("Enter current mileage");
+        endMilage.setLayoutX(50);
+        endMilage.setLayoutY(10);
+
+        remainingGas = new TextField();
+        remainingGas.setPromptText("Enter amount of gas");
+        remainingGas.setLayoutX(50);
+        remainingGas.setLayoutY(25);
+
+
+        root4.getChildren().addAll(remainingGas, endMilage);
+        endOfReservation = new Scene(root4, 600, 600);
 
 
         primaryStage.setTitle("Wagner autocampers");
@@ -149,5 +179,50 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    @Override
+    public void handle(ActionEvent event) {
+
+        if(event.getSource().equals(saveScene2)){
+            strName = name.getText();
+            strAddress = address.getText();
+            strZipcode = zipCode.getText();
+            strPhone = phone.getText();
+            strDriver = driverLicense.getText();
+            strExtraDriver = extraDriver.getText();
+
+            int intPhone = Integer.parseInt(strPhone);
+            int intZipcode = Integer.parseInt(strZipcode);
+            int intDriver = Integer.parseInt(strDriver);
+            int intExtraDriver = Integer.parseInt(strExtraDriver);
+
+            System.out.println(strName);
+            System.out.println(strAddress);
+
+            System.out.println(intPhone);
+            System.out.println(intZipcode);
+            System.out.println(intDriver);
+            System.out.println(intExtraDriver);
+
+
+        }
+
+        if (event.getSource().equals(search)){
+
+            String strStartWeek = startWeek.getText();
+            String strEndWeek = endWeek.getText();
+            String strCategory = (String) categorySelection.getSelectionModel().getSelectedItem();
+            int intStartWeek = Integer.parseInt(strStartWeek);
+            int intEndWeek = Integer.parseInt(strEndWeek);
+
+            System.out.println(insurance.isSelected());
+            System.out.println(strCategory);
+            System.out.println(intStartWeek);
+            System.out.println(intEndWeek);
+
+
+        }
+
     }
 }
