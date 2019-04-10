@@ -1,21 +1,18 @@
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.Properties;
+import java.util.concurrent.Callable;
 
 /**
  *
  * @author tha
  */
 public class DB {
-    private static Connection con;
-    private static PreparedStatement ps;
+    public static Connection con;
+    public static PreparedStatement ps;
     private static ResultSet rs;
     private static String port;
     private static String databaseName;
@@ -201,5 +198,26 @@ public class DB {
             disconnect();
         }
         return false;   
-    } 
+    }
+
+    public static ArrayList storedproc(int weekNumber) throws SQLException{
+        try{
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=DB_WAGNER",userName,password);
+
+            CallableStatement cs = con.prepareCall("{CALL dbo.Vacant_Check(?)}");
+            cs.setInt(1, weekNumber);
+            cs.execute();
+
+            ResultSet rs = cs.getResultSet();
+            while (rs.next()){
+                System.out.println(rs.getString("fldAutoID"));
+            }
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }

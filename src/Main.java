@@ -8,9 +8,13 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.sql.CallableStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 
 public class Main extends Application implements EventHandler<ActionEvent> {
@@ -32,7 +36,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     TextField endMilage;
     TextField remainingGas;
     ChoiceBox categorySelection;
-    TableView availableCampers;
+    TextArea availableCampers;
     Label depositLabel;
     Label paymentLabel;
     Label depositDue;
@@ -145,10 +149,19 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         categorySelection.setLayoutX(50);
         categorySelection.setLayoutY(50);
 
-        availableCampers = new TableView();
-        //availableCampers.setItems();
+        availableCampers = new TextArea();
         availableCampers.setLayoutX(50);
-        availableCampers.setLayoutY(175);
+        availableCampers.setLayoutY(200);
+
+        /*
+        TableColumn category = new TableColumn("Category");
+        TableColumn brand = new TableColumn("Brand");
+        TableColumn model = new TableColumn("Model");
+        TableColumn currentKilometer = new TableColumn("Current kilometer");
+        TableColumn description = new TableColumn("Description");
+
+
+        availableCampers.getColumns().addAll(category, brand, model, currentKilometer, description);*/
 
         search = new Button("Search");
         search.setLayoutX(245);
@@ -252,17 +265,33 @@ public class Main extends Application implements EventHandler<ActionEvent> {
             String strEndWeek = endWeek.getText();
             String strCategory = (String) categorySelection.getSelectionModel().getSelectedItem();
             int intStartWeek = Integer.parseInt(strStartWeek);
-            int intEndWeek = Integer.parseInt(strEndWeek);
+
+
 
             System.out.println(insurance.isSelected());
             System.out.println(strCategory);
             System.out.println(intStartWeek);
-            System.out.println(intEndWeek);
+
+            ArrayList campers = new ArrayList();
+
+            try {
+                 campers = DB.storedproc(Integer.parseInt(startWeek.getText()));
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                availableCampers.appendText(campers.toString());
+
 
 
         }
 
     }
+
+
+
+
+
+
 
     public String depositDate(){
 
