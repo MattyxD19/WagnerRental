@@ -5,16 +5,17 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 
 public class Main extends Application implements EventHandler<ActionEvent> {
 
-    Scene scene1, scene2, scene3, endOfReservation;
+    Scene scene1, scene2, scene3, scene4, endOfReservation;
     Button search;
     Button button2;
     Button saveScene2;
@@ -32,6 +33,14 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     TextField remainingGas;
     ChoiceBox categorySelection;
     TableView availableCampers;
+    Label depositLabel;
+    Label paymentLabel;
+    Label depositDue;
+    Label paymentDue;
+
+
+
+
 
     public String totalPrice;
     public String strName, strAddress, strPhone, strZipcode, strDriver, strExtraDriver, strStartWeek, strEndWeek;
@@ -40,11 +49,15 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     public Pane root2 = new Pane();
     public Pane root3 = new Pane();
     public Pane root4 = new Pane();
+    public Pane rootReservation = new Pane();
 
 
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
+
+
 //Scene 1
         Label label1= new Label("Welcome to Autocamper Rental");
         Button button1= new Button("Start reservation");
@@ -151,11 +164,33 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
         scene3 = new Scene(root3, 600, 600);
         search.setOnAction(this);
-        button3.setOnAction(e -> primaryStage.setScene(endOfReservation));
+        button3.setOnAction(e -> primaryStage.setScene(scene4));
         root3.getChildren().addAll(startWeek, endWeek, categorySelection, availableCampers, search,
                 button3, insurance, label3, label4, label5, priceLabel);
 
         //Scene 4
+        depositLabel = new Label();
+        paymentLabel = new Label();
+        depositDue = new Label();
+        paymentDue = new Label();
+        depositDue.setText("Deposit due");
+        paymentDue.setText("Payment due");
+        depositLabel.setText(depositDate());
+        paymentLabel.setText(paymentDue());
+
+        depositLabel.setLayoutX(50);
+        depositLabel.setLayoutY(50);
+        depositDue.setLayoutX(50);
+        depositDue.setLayoutY(25);
+
+        paymentDue.setLayoutX(150);
+        paymentDue.setLayoutY(25);
+        paymentLabel.setLayoutX(150);
+        paymentLabel.setLayoutY(50);
+
+
+        root4.getChildren().addAll(depositLabel, paymentLabel, depositDue, paymentDue);
+        scene4 = new Scene(root4, 600, 600);
 
         endMilage = new TextField();
         endMilage.setPromptText("Enter current mileage");
@@ -168,8 +203,8 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         remainingGas.setLayoutY(50);
 
 
-        root4.getChildren().addAll(remainingGas, endMilage);
-        endOfReservation = new Scene(root4, 600, 600);
+        rootReservation.getChildren().addAll(remainingGas, endMilage);
+        endOfReservation = new Scene(rootReservation, 600, 600);
 
 
         primaryStage.setTitle("Wagner autocampers");
@@ -227,5 +262,23 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
         }
 
+    }
+
+    public String depositDate(){
+
+        LocalDate date = LocalDate.now().plusDays(14);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MM yyyy");
+        String formattedString = date.format(formatter);
+
+        return formattedString;
+    }
+
+    public String paymentDue(){
+        LocalDate date = LocalDate.now().plusDays(56);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MM yyyy");
+        String formattedString = date.format(formatter);
+
+        return formattedString;
     }
 }
