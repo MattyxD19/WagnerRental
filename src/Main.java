@@ -37,6 +37,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     Label paymentLabel;
     Label depositDue;
     Label paymentDue;
+    TextField rentals;
 
 
 
@@ -56,8 +57,6 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-
-
 //Scene 1
         Label label1= new Label("Welcome to Autocamper Rental");
         Button button1= new Button("Start reservation");
@@ -74,6 +73,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         saveScene2.setLayoutX(50);
         saveScene2.setLayoutY(350);
         saveScene2.setOnAction(this);
+
 
         name = new TextField();
         name.setPromptText("Enter name");
@@ -232,8 +232,8 @@ public class Main extends Application implements EventHandler<ActionEvent> {
             int intDriver = Integer.parseInt(strDriver);
             int intExtraDriver = Integer.parseInt(strExtraDriver);
 
-            DB.insertSQL("INSERT INTO tblCustomer VALUES ('"+ strName +"','"+ strAddress +"' ,"+ intPhone +" \n" +
-                    "," + intZipcode + " ,"+ intDriver+" ,"+ intExtraDriver+")");
+            DB.insertSQL("INSERT INTO tblCustomer VALUES ("+ intPhone +",'"+ strName +"' ,'"+ strAddress +"' \n" +
+                    "," + intZipcode + "," + 0 + " ,"+ intDriver+" ,"+ intExtraDriver+")");
 
             System.out.println(strName);
             System.out.println(strAddress);
