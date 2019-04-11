@@ -25,6 +25,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     Button saveScene2;
     Button endReservation;
     Button button3;
+    Button confirm;
     CheckBox insurance;
     TextField name;
     TextField address;
@@ -38,11 +39,9 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     TextField remainingGas;
     ChoiceBox categorySelection;
     TextArea availableCampers;
-    Label depositLabel;
-    Label paymentLabel;
     Label depositDue;
     Label paymentDue;
-    Label finalPrice;
+    Label orderID;
     Label priceLabel;
     Button checkWeek;
     ChoiceBox selectCamper;
@@ -174,7 +173,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         search.setLayoutY(150);
 
         button3= new Button("Continue");
-        button3.setLayoutX(400);
+        button3.setLayoutX(500);
         button3.setLayoutY(500);
 
         insurance = new CheckBox();
@@ -188,6 +187,38 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         checkWeek = new Button("Check week");
         checkWeek.setLayoutX(300);
         checkWeek.setLayoutY(150);
+
+        depositDue = new Label();
+        paymentDue = new Label();
+        depositDue.setText("Deposit due: " + depositDate() );
+        paymentDue.setText("Payment due: " + paymentDue() );
+
+        depositDue.setLayoutX(50);
+        depositDue.setLayoutY(400);
+
+        paymentDue.setLayoutX(50);
+        paymentDue.setLayoutY(450);
+
+        orderID = new Label();
+        orderID.setText("Order ID: " );
+        orderID.setLayoutX(50);
+        orderID.setLayoutY(500);
+
+        confirm = new Button("Confirm reservation");
+        confirm.setLayoutX(350);
+        confirm.setLayoutY(500);
+        confirm.setOnAction(event -> {
+
+            String strStartWeek = startWeek.getText();
+            String strEndWeek = endWeek.getText();
+            String strCategory = (String) categorySelection.getSelectionModel().getSelectedItem();
+            int intStartWeek = Integer.parseInt(strStartWeek);
+            int intEndWeek = Integer.parseInt(strEndWeek);
+            String autoID = (String) selectCamper.getValue();
+            int intAutoID = Integer.parseInt(autoID);
+
+            DB.insertSQL("Insert into tblOccupied VALUES ("+intAutoID+", "+intStartWeek+" , "+intEndWeek+", 2019)");
+        });
 
         checkWeek.setOnAction(event -> {
 
@@ -206,44 +237,82 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
         scene3 = new Scene(root3, 600, 600);
         search.setOnAction(this);
-        button3.setOnAction(e -> primaryStage.setScene(scene4));
-        root3.getChildren().addAll(startWeek, endWeek, categorySelection, availableCampers, search,
-                button3, insurance, label3, label4, label5, priceLabel, selectCamper, checkWeek);
-
-        //Scene 4
-        depositLabel = new Label();
-        paymentLabel = new Label();
-        depositDue = new Label();
-        paymentDue = new Label();
-        depositDue.setText("Deposit due: " + depositDate() );
-        paymentDue.setText("Payment due: " + paymentDue() );
-
-        depositDue.setLayoutX(50);
-        depositDue.setLayoutY(25);
-        
-        paymentLabel.setLayoutX(150);
-        paymentLabel.setLayoutY(50);
-
-        finalPrice = new Label();
-        finalPrice.setLayoutX(100);
-        finalPrice.setLayoutY(100);
-        finalPrice.setText("price: ");
+        button3.setOnAction(e -> primaryStage.setScene(scene1));
+        root3.getChildren().addAll(startWeek, endWeek, categorySelection,
+                availableCampers, search, button3, insurance, label3, label4, label5,
+                priceLabel, selectCamper, checkWeek, depositDue, paymentDue, confirm);
 
 
-        root4.getChildren().addAll(depositLabel, paymentLabel, depositDue, paymentDue, finalPrice);
-        scene4 = new Scene(root4, 600, 600);
-
+        //End reservation scene
         endMilage = new TextField();
         endMilage.setPromptText("Enter current mileage");
         endMilage.setLayoutX(50);
         endMilage.setLayoutY(10);
+
+        Label finalprice = new Label();
+        finalprice.setLayoutX(50);
+        finalprice.setLayoutY(250);
+
+
+        TextField autoID = new TextField();
+        autoID.setPromptText("Enter auto ID");
+        autoID.setLayoutX(50);
+        autoID.setLayoutY(100);
+
+        Button update = new Button("End payment");
+        update.setLayoutX(300);
+        update.setLayoutY(400);
+
+        TextField previousMil = new TextField();
+        previousMil.setPromptText("Previous mileage");
+        previousMil.setLayoutX(250);
+        previousMil.setLayoutY(50);
+
+        update.setOnAction(event -> {
+
+            String getID = autoID.getText();
+            int intID = Integer.parseInt(getID);
+
+            String getMileage = endMilage.getText();
+            int newMileage = Integer.parseInt(getMileage);
+
+            String getOldMileage = previousMil.getText();
+            int oldMileage = Integer.parseInt(getOldMileage);
+
+            double priceGas = newMileage - oldMileage - 1000;
+            priceGas = priceGas * 0.3;
+            System.out.println(priceGas);
+
+            /*
+            DB.selectSQL("SELECT tblCurrentKilometer FROM tblAutoCampers where fldAutoID = "+autoID+"");
+
+            do{
+                String data = DB.getDisplayData();
+                if (data.equals(DB.NOMOREDATA)){
+                    break;
+                }else{
+                    System.out.print(data);
+                }
+            } while(true);
+            */
+
+
+            DB.updateSQL("UPDATE tblAutoCampers SET fldCurrentKilometer = "+ newMileage +" where fldAutoID = "+intID+" ");
+
+
+
+
+
+
+
+        });
 
         remainingGas = new TextField();
         remainingGas.setPromptText("Enter amount of gas");
         remainingGas.setLayoutX(50);
         remainingGas.setLayoutY(50);
 
-        rootReservation.getChildren().addAll(remainingGas, endMilage);
+        rootReservation.getChildren().addAll(remainingGas, endMilage, autoID, update, finalprice, previousMil);
         endOfReservation = new Scene(rootReservation, 600, 600);
 
 
@@ -401,6 +470,8 @@ public class Main extends Application implements EventHandler<ActionEvent> {
                     availableCampers.appendText(data);
                 }
             } while(true);
+
+
 
 
 

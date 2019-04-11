@@ -73,10 +73,10 @@ public class DB {
     }
     
     /**
-     * 
+     *
      * @param sql the sql string to be executed in SQLServer
      */
-    public static void selectSQL(String sql){ 
+    public static void selectSQL(String sql){
         if (terminated){
             System.exit(0);
         }
