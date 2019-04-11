@@ -1,11 +1,12 @@
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Properties;
-import java.util.concurrent.Callable;
 
 /**
  *
@@ -20,9 +21,10 @@ public class DB {
     private static String userName;
     private static String password;
     
-    public static final String NOMOREDATA ="|ND|"; 
+    public static final String NOMOREDATA ="|ND|";
     private static int numberOfColumns;
     private static int currentColumnNumber=1;
+
     
     /**
      * STATES
@@ -107,11 +109,11 @@ public class DB {
         }
         if (!pendingData){
             terminated=true;
-            throw new RuntimeException("ERROR! No previous select, communication with the database is lost!"); 
+            throw new RuntimeException("ERROR! No previous select, communication with the database is lost!");
         }else if (!moreData){
            disconnect();
            pendingData=false;
-           return NOMOREDATA; 
+           return NOMOREDATA;
         }else {
            return getNextValue(true);
         }   
@@ -130,20 +132,20 @@ public class DB {
         }
         if (!pendingData){
             terminated=true;
-            throw new RuntimeException("ERROR! No previous select, communication with the database is lost!"); 
+            throw new RuntimeException("ERROR! No previous select, communication with the database is lost!");
         }else if (!moreData){
            disconnect();
            pendingData=false;
-           return NOMOREDATA; 
+           return NOMOREDATA;
         }else {
            return getNextValue(false).trim();
         }  
     }
      
     private static String getNextValue(boolean view){
-        StringBuilder value= new StringBuilder(); 
+        StringBuilder value= new StringBuilder();
         try{
-            value.append(rs.getString(currentColumnNumber));  
+            value.append(rs.getString(currentColumnNumber));
             if (currentColumnNumber>=numberOfColumns){
                 currentColumnNumber=1;
                 if (view){
@@ -158,20 +160,20 @@ public class DB {
             } 
         }catch (SQLException e){
                 System.err.println(e.getMessage());
-        } 
+        }
         return value.toString();
     }
     
     public static boolean insertSQL(String sql){  
-        return executeUpdate(sql);
+        return executeUpdate(sql );
     }
     
     public static boolean updateSQL(String sql){  
-       return executeUpdate(sql);
+       return executeUpdate(sql );
     }
     
     public static boolean deleteSQL(String sql){  
-       return executeUpdate(sql);
+       return executeUpdate(sql );
     }
     
     private static boolean executeUpdate(String sql){
@@ -180,7 +182,7 @@ public class DB {
         }
         if (pendingData){
             terminated=true;
-            throw new RuntimeException("ERROR! There were pending data from previous select, communication with the database is lost! "); 
+             throw new RuntimeException("ERROR! There were pending data from previous select, communication with the database is lost! ");
         }
         try{
             if (ps!=null){
@@ -198,13 +200,15 @@ public class DB {
         } finally{
             disconnect();
         }
-        return false;   
+        return false;
     }
 
-    public static ArrayList storedproc(int weekNumber) throws SQLException{
-        try{
+    public static ArrayList storedproc(int weekNumber) throws SQLException {
+
+        ArrayList campers = new ArrayList();
+        try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=DB_WAGNER",userName,password);
+            Connection con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=DB_WAGNER", userName, password);
 
             CallableStatement cs = con.prepareCall("{CALL dbo.Vacant_Check(?)}");
             cs.setInt(1, weekNumber);
@@ -212,15 +216,18 @@ public class DB {
 
             ResultSet rs = cs.getResultSet();
 
-            while (rs.next()){
+            while (rs.next()) {
                 System.out.println(rs.getString("fldAutoID"));
+                campers.add(rs.getString("fldAutoID"));
 
             }
+            return campers;
 
-        } catch (ClassNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         return null;
     }
+
 }
