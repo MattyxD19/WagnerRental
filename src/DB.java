@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Properties;
 import java.util.concurrent.Callable;
 
@@ -210,8 +211,10 @@ public class DB {
             cs.execute();
 
             ResultSet rs = cs.getResultSet();
+
             while (rs.next()){
                 System.out.println(rs.getString("fldAutoID"));
+
             }
 
         } catch (ClassNotFoundException e) {

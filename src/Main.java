@@ -17,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 
+
 public class Main extends Application implements EventHandler<ActionEvent> {
 
     Scene scene1, scene2, scene3, scene4, endOfReservation;
@@ -24,6 +25,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     Button button2;
     Button saveScene2;
     Button endReservation;
+    Button button3;
     CheckBox insurance;
     TextField name;
     TextField address;
@@ -41,7 +43,11 @@ public class Main extends Application implements EventHandler<ActionEvent> {
     Label paymentLabel;
     Label depositDue;
     Label paymentDue;
+    Label finalPrice;
     TextField rentals;
+   public ComboBox selectCamper;
+
+    boolean superInsurance = false;
 
 
 
@@ -167,7 +173,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         search.setLayoutX(245);
         search.setLayoutY(150);
 
-        Button button3= new Button("Continue");
+        button3= new Button("Continue");
         button3.setLayoutX(400);
         button3.setLayoutY(500);
 
@@ -175,11 +181,15 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         insurance.setLayoutX(225);
         insurance.setLayoutY(100);
 
+        selectCamper = new ComboBox();
+        selectCamper.setLayoutX(450);
+        selectCamper.setLayoutY(100);
+
         scene3 = new Scene(root3, 600, 600);
         search.setOnAction(this);
         button3.setOnAction(e -> primaryStage.setScene(scene4));
         root3.getChildren().addAll(startWeek, endWeek, categorySelection, availableCampers, search,
-                button3, insurance, label3, label4, label5, priceLabel);
+                button3, insurance, label3, label4, label5, priceLabel, selectCamper);
 
         //Scene 4
         depositLabel = new Label();
@@ -266,20 +276,47 @@ public class Main extends Application implements EventHandler<ActionEvent> {
             String strCategory = (String) categorySelection.getSelectionModel().getSelectedItem();
             int intStartWeek = Integer.parseInt(strStartWeek);
 
+            if (insurance.isSelected()){
+                superInsurance = true;
+            }
+
+
+
 
 
             System.out.println(insurance.isSelected());
             System.out.println(strCategory);
             System.out.println(intStartWeek);
 
+
+
+
+            /*
+
             ArrayList campers = new ArrayList();
+            ArrayList<AutoCamper> autoCampers = new ArrayList<AutoCamper>();
 
             try {
+
+
+                campers.
                  campers = DB.storedproc(Integer.parseInt(startWeek.getText()));
+                System.out.println(campers);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-                availableCampers.appendText(campers.toString());
+               availableCampers.appendText(campers.toString());
+            */
+
+
+        }
+
+        if (event.getSource().equals(button3)){
+
+            if (superInsurance){
+                System.out.println("final price: 5000");
+            }
+
 
 
 
