@@ -215,18 +215,12 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         paymentLabel = new Label();
         depositDue = new Label();
         paymentDue = new Label();
-        depositDue.setText("Deposit due");
-        paymentDue.setText("Payment due");
-        depositLabel.setText(depositDate());
-        paymentLabel.setText(paymentDue());
+        depositDue.setText("Deposit due: " + depositDate() );
+        paymentDue.setText("Payment due: " + paymentDue() );
 
-        depositLabel.setLayoutX(50);
-        depositLabel.setLayoutY(50);
         depositDue.setLayoutX(50);
         depositDue.setLayoutY(25);
-
-        paymentDue.setLayoutX(150);
-        paymentDue.setLayoutY(25);
+        
         paymentLabel.setLayoutX(150);
         paymentLabel.setLayoutY(50);
 
